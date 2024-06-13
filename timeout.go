@@ -37,6 +37,11 @@ func New(opts ...Option) gin.HandlerFunc {
 	bufPool = &BufferPool{}
 
 	return func(c *gin.Context) {
+
+		if t.skipPatternMatcher == nil || t.skipPatternMatcher.Matches(c.Request.URL.Path) {
+			return
+		}
+
 		finish := make(chan struct{}, 1)
 		panicChan := make(chan interface{}, 1)
 

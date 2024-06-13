@@ -2,6 +2,7 @@ package timeout
 
 import (
 	"context"
+	"github.com/slink-go/util/matcher"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -99,4 +100,39 @@ func TestPanic(t *testing.T) {
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 	assert.Equal(t, "", w.Body.String())
+}
+
+func configureGin() *gin.Engine {
+	r := gin.New()
+	r.Use(
+		New(
+			WithTimeout(50*time.Microsecond),
+			WithSkip(matcher.NewRegexPatternMatcher("*/skip")),
+			WithHandler(emptySuccessResponse),
+		),
+	)
+	r.GET("/", func(c *gin.Context) {
+		time.Sleep(time.Second)
+	})
+	r.GET("/skip", func(c *gin.Context) {
+		time.Sleep(time.Second)
+	})
+	return r
+}
+
+func TestTimeoutWithSkipTM(t *testing.T) {
+	r := configureGin()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequestWithContext(context.Background(), "GET", "/", nil)
+	r.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusRequestTimeout, w.Code)
+	assert.Equal(t, http.StatusText(http.StatusRequestTimeout), w.Body.String())
+
+}
+func TestTimeoutWithSkipOK(t *testing.T) {
+	r := configureGin()
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequestWithContext(context.Background(), "GET", "/skip", nil)
+	r.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusOK, w.Code)
 }

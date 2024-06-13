@@ -1,12 +1,11 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/slink-go/gin-timeout"
 	"log"
 	"net/http"
 	"time"
-
-	"github.com/gin-contrib/timeout"
-	"github.com/gin-gonic/gin"
 )
 
 func emptySuccessResponse(c *gin.Context) {

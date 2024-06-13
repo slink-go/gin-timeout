@@ -1,10 +1,10 @@
 package timeout
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/slink-go/util/matcher"
 	"net/http"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 // Option for timeout
@@ -14,6 +14,13 @@ type Option func(*Timeout)
 func WithTimeout(timeout time.Duration) Option {
 	return func(t *Timeout) {
 		t.timeout = timeout
+	}
+}
+
+// WithSkip set skip endpoints pattern matcher
+func WithSkip(skipPatternMatcher matcher.PatternMatcher) Option {
+	return func(t *Timeout) {
+		t.skipPatternMatcher = skipPatternMatcher
 	}
 }
 
@@ -37,7 +44,8 @@ func defaultResponse(c *gin.Context) {
 
 // Timeout struct
 type Timeout struct {
-	timeout  time.Duration
-	handler  gin.HandlerFunc
-	response gin.HandlerFunc
+	timeout            time.Duration
+	skipPatternMatcher matcher.PatternMatcher
+	handler            gin.HandlerFunc
+	response           gin.HandlerFunc
 }

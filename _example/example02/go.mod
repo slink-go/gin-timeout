@@ -3,7 +3,7 @@ module example
 go 1.18
 
 require (
-	github.com/gin-contrib/timeout v0.0.3
+	github.com/slink-go/gin-timeout v1.0.2
 	github.com/gin-gonic/gin v1.8.1
 )
 
