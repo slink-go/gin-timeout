@@ -1,6 +1,7 @@
 package timeout
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -65,6 +66,7 @@ func New(opts ...Option) gin.HandlerFunc {
 		case p := <-panicChan:
 			tw.FreeBuffer()
 			c.Writer = w
+			fmt.Printf("\n\nPANIC: %s\n\n\n", p)
 			panic(p)
 
 		case <-finish:
@@ -76,9 +78,13 @@ func New(opts ...Option) gin.HandlerFunc {
 				dst[k] = vv
 			}
 
-			if _, err := tw.ResponseWriter.Write(buffer.Bytes()); err != nil {
-				panic(err)
+			if tw.Header().Get("Upgrade") == "" { // do not write anything to WEBSOCKET connections
+				tw.ResponseWriter.Status()
+				if _, err := tw.ResponseWriter.Write(buffer.Bytes()); err != nil {
+					panic(err)
+				}
 			}
+
 			tw.FreeBuffer()
 			bufPool.Put(buffer)
 
