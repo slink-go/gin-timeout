@@ -6,7 +6,7 @@ toolchain go1.22.4
 
 require (
 	github.com/gin-gonic/gin v1.10.0
-	github.com/slink-go/gin-timeout v1.0.2
+	go.slink.ws/gin-timeout v1.0.2
 )
 
 require (

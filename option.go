@@ -2,7 +2,7 @@ package timeout
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/slink-go/util/matcher"
+	"go.slink.ws/util/matcher"
 	"net/http"
 	"time"
 )

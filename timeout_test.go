@@ -2,7 +2,7 @@ package timeout
 
 import (
 	"context"
-	"github.com/slink-go/util/matcher"
+	"go.slink.ws/util/matcher"
 	"net/http"
 	"net/http/httptest"
 	"testing"
